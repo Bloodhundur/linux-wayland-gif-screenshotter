@@ -1,24 +1,36 @@
-fn main() {
-    let conn = Connection::connect_to_env().unwrap();
+use libwaysip::{SelectionType, WaysipConnection, get_area};
+use wayland_client::{
+    Connection, Dispatch, QueueHandle,
+    globals::{GlobalListContents, registry_queue_init},
+    protocol::wl_registry,
+};
 
-    let mut event_queue = conn.new_event_queue();
-    let qhandle = event_queue.handle();
+struct State {}
 
-    let display = conn.display();
-    display.get_registry(&qhandle, ());
-
-    let mut state = State {
-        running: true,
-        base_surface: None,
-        buffer: None,
-        wm_base: None,
-        xdg_surface: None,
-        configured: false,
-    };
-
-    println!("Starting the example window app, press <ESC> to quit.");
-
-    while state.running {
-        event_queue.blocking_dispatch(&mut state).unwrap();
+impl Dispatch<wl_registry::WlRegistry, GlobalListContents> for State {
+    fn event(
+        _: &mut State,
+        _: &wl_registry::WlRegistry,
+        _: wl_registry::Event,
+        _: &GlobalListContents,
+        _: &Connection,
+        _: &QueueHandle<State>,
+    ) {
     }
+}
+
+pub fn sip() {
+    let connection = Connection::connect_to_env().unwrap();
+    let (globals, _) = registry_queue_init::<State>(&connection).unwrap();
+
+    println!(
+        "{:?}",
+        get_area(
+            Some(WaysipConnection {
+                connection: &connection,
+                globals: &globals
+            }),
+            SelectionType::Area
+        )
+    );
 }

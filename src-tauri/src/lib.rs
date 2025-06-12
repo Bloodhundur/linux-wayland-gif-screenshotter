@@ -1,13 +1,3 @@
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use wayland_client::protocol::wl_pointer::WlPointer;
-use wayland_client::protocol::wl_registry;
-use wayland_client::protocol::wl_seat;
-use wayland_client::protocol::wl_surface::WlSurface;
-use wayland_server::protocol::wl_compositor;
-use wayland_server::protocol::wl_pointer;
-use wayland_client::Connection;
-use wayland_client::protocol::wl_compositor::WlCompositor;
-
 
 #[tauri::command]
 fn greet(name: &str) -> String {
